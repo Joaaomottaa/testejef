@@ -1,0 +1,1092 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Estudo & Simulado Final - Jefté</title>
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #4e73df;
+            --success-color: #1cc88a;
+            --info-color: #36b9cc;
+            --warning-color: #f6c23e;
+            --danger-color: #e74a3b;
+            --secondary-color: #858796;
+            --dark-bg: #f8f9fc;
+        }
+
+        body {
+            background-color: var(--dark-bg);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            color: #5a5c69;
+        }
+
+        /* --- Estilos do Resumo (Cheat Sheet) --- */
+        .header-title {
+            color: #4e73df;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 1rem;
+        }
+
+        .summary-card {
+            border: none;
+            border-radius: 0.75rem;
+            box-shadow: 0 0.15rem 1.75rem 0 rgba(58, 59, 69, 0.15);
+            transition: transform 0.2s;
+            height: 100%;
+            background-color: #fff;
+        }
+
+        .summary-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .card-header-summary {
+            background-color: #fff;
+            border-bottom: 1px solid #e3e6f0;
+            font-weight: 700;
+            padding: 0.75rem 1.25rem;
+            border-top-left-radius: 0.75rem;
+            border-top-right-radius: 0.75rem;
+        }
+
+        .border-left-primary { border-left: 0.25rem solid var(--primary-color) !important; }
+        .border-left-success { border-left: 0.25rem solid var(--success-color) !important; }
+        .border-left-info { border-left: 0.25rem solid var(--info-color) !important; }
+        .border-left-warning { border-left: 0.25rem solid var(--warning-color) !important; }
+        .border-left-danger { border-left: 0.25rem solid var(--danger-color) !important; }
+        .border-left-secondary { border-left: 0.25rem solid var(--secondary-color) !important; }
+
+        .text-primary { color: var(--primary-color) !important; }
+        .text-success { color: var(--success-color) !important; }
+        .text-info { color: var(--info-color) !important; }
+        .text-warning { color: var(--warning-color) !important; }
+        .text-danger { color: var(--danger-color) !important; }
+
+        .concept-badge { font-size: 0.8rem; margin-right: 0.3rem; margin-bottom: 0.3rem; }
+        
+        .list-definition li {
+            margin-bottom: 8px;
+            font-size: 0.9rem;
+        }
+        .list-definition strong {
+            color: #5a5c69;
+        }
+        
+        .tip-box {
+            background-color: #fff3cd;
+            border-left: 4px solid #ffc107;
+            padding: 10px;
+            margin-top: 15px;
+            font-size: 0.9em;
+            color: #856404;
+        }
+
+        /* --- Estilos do Simulado --- */
+        .quiz-container {
+            max-width: 800px;
+            margin: 0 auto;
+            display: none; /* Inicialmente oculto */
+        }
+        .question-card {
+            border: none;
+            border-radius: 10px;
+            box-shadow: 0 0.15rem 1.75rem 0 rgba(58, 59, 69, 0.15);
+            margin-bottom: 20px;
+            background-color: #fff;
+            transition: all 0.3s ease;
+        }
+        .question-header {
+            background-color: #4e73df;
+            color: white;
+            border-radius: 10px 10px 0 0;
+            padding: 15px 20px;
+            font-weight: bold;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .topic-badge {
+            background-color: rgba(255,255,255,0.2);
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+        }
+        .option-label {
+            display: block;
+            padding: 12px 15px;
+            margin-bottom: 8px;
+            border: 1px solid #e3e6f0;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        .option-label:hover {
+            background-color: #f8f9fc;
+            border-color: #4e73df;
+        }
+        .form-check-input:checked + .option-text {
+            font-weight: bold;
+            color: #4e73df;
+        }
+        
+        /* Feedback Styles */
+        .feedback-box {
+            display: none;
+            margin-top: 15px;
+            padding: 15px;
+            border-radius: 8px;
+            border-left: 5px solid;
+        }
+        .feedback-correct {
+            background-color: #d1e7dd;
+            border-color: #198754;
+            color: #0f5132;
+        }
+        .feedback-incorrect {
+            background-color: #f8d7da;
+            border-color: #dc3545;
+            color: #842029;
+        }
+        
+        .btn-check-answer {
+            background-color: #4e73df;
+            color: white;
+            border: none;
+            padding: 10px 25px;
+            border-radius: 5px;
+            font-weight: 600;
+        }
+        .btn-check-answer:hover {
+            background-color: #2e59d9;
+            color: white;
+        }
+        
+        .sticky-score {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            z-index: 1000;
+            background: white;
+            padding: 15px;
+            border-radius: 50px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+            font-weight: bold;
+            color: #4e73df;
+            border: 2px solid #4e73df;
+            display: none; /* Só aparece no simulado */
+        }
+
+        .btn-start-quiz {
+            padding: 15px 40px;
+            font-size: 1.5rem;
+            font-weight: bold;
+            border-radius: 50px;
+            box-shadow: 0 4px 15px rgba(78, 115, 223, 0.4);
+            transition: transform 0.2s;
+        }
+        .btn-start-quiz:hover {
+            transform: scale(1.05);
+        }
+        
+        /* Accordion Custom */
+        .accordion-button:not(.collapsed) {
+            color: var(--danger-color);
+            background-color: #fbecec;
+        }
+        .accordion-button:focus {
+            box-shadow: none;
+            border-color: rgba(0,0,0,.125);
+        }
+
+        /* --- Estilos do Resultado Final --- */
+        .result-container {
+            max-width: 900px;
+            margin: 0 auto;
+            display: none;
+        }
+        .score-big {
+            font-size: 4rem;
+            font-weight: 800;
+            color: #4e73df;
+        }
+        .stat-card {
+            background: white;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 0.15rem 1.75rem 0 rgba(58, 59, 69, 0.1);
+            text-align: center;
+            height: 100%;
+        }
+    </style>
+</head>
+<body class="p-3 p-md-5">
+
+    <!-- TELA 1: RESUMO (CHEAT SHEET) -->
+    <div id="summary-view" class="container-fluid" style="max-width: 1200px;">
+        <div class="text-center mb-5">
+            <h1 class="header-title display-5"><i class="fas fa-graduation-cap me-2"></i>Resumo & Revisão</h1>
+            <p class="lead text-secondary">Revise os pontos principais antes de iniciar o simulado.</p>
+            <button onclick="startQuiz()" class="btn btn-primary btn-start-quiz mt-3">
+                <i class="fas fa-play me-2"></i>INICIAR SIMULADO
+            </button>
+        </div>
+
+        <div class="row g-4 mb-5">
+            
+            <!-- 1. ARQUITETURA & SOLID -->
+            <div class="col-md-6 col-lg-4">
+                <div class="summary-card border-left-primary">
+                    <div class="card-header-summary text-primary">
+                        <span><i class="fas fa-cubes me-2"></i>Arquitetura & SOLID</span>
+                    </div>
+                    <div class="card-body p-3">
+                        <h6 class="fw-bold mb-2">S.O.L.I.D.</h6>
+                        <ul class="list-unstyled mb-3 small">
+                            <li class="mb-2"><strong class="text-primary">S (SRP)</strong> - <strong>Responsabilidade Única.</strong> Uma classe = um motivo para mudar. <em>Coesão Alta.</em></li>
+                            <li class="mb-2"><strong class="text-primary">O (OCP)</strong> - <strong>Aberto/Fechado.</strong> Aberto para extensão (novas features), fechado para modificação (não mexa no que funciona). Use herança/polimorfismo.</li>
+                            <li class="mb-2"><strong class="text-primary">L (LSP)</strong> - <strong>Liskov.</strong> Uma subclasse deve substituir a classe pai sem quebrar o código. (Cuidado com Quadrado herdando de Retângulo).</li>
+                            <li class="mb-2"><strong class="text-primary">I (ISP)</strong> - <strong>Segregação de Interface.</strong> Muitas interfaces pequenas > Uma interface gigante. Não force classes a implementar o que não usam.</li>
+                            <li class="mb-2"><strong class="text-primary">D (DIP)</strong> - <strong>Inversão de Dependência.</strong> Dependa de abstrações (interfaces), não de classes concretas.</li>
+                        </ul>
+                        <hr>
+                        <h6 class="fw-bold mb-2 small">Meta de Design</h6>
+                        <div class="d-flex justify-content-between text-center small">
+                            <div class="p-2 border rounded bg-light w-50 me-1">
+                                <i class="fas fa-link text-danger"></i><br>
+                                Baixo<br><strong>Acoplamento</strong>
+                            </div>
+                            <div class="p-2 border rounded bg-light w-50 ms-1">
+                                <i class="fas fa-magnet text-success"></i><br>
+                                Alta<br><strong>Coesão</strong>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 2. POO -->
+            <div class="col-md-6 col-lg-4">
+                <div class="summary-card border-left-success">
+                    <div class="card-header-summary text-success">
+                        <span><i class="fas fa-code-branch me-2"></i>POO (Orientação a Objetos)</span>
+                    </div>
+                    <div class="card-body p-3">
+                        <h6 class="fw-bold">4 Pilares Fundamentais</h6>
+                        <ul class="list-unstyled small list-definition">
+                            <li><i class="fas fa-box text-success me-1"></i> <strong>Encapsulamento:</strong> Proteger dados sensíveis (private/protected) e liberar acesso controlado (getters/setters/métodos).</li>
+                            <li><i class="fas fa-sitemap text-success me-1"></i> <strong>Herança:</strong> Relação <em>"É UM"</em>. Uma classe filha herda atributos e métodos do pai. Reuso.</li>
+                            <li><i class="fas fa-random text-success me-1"></i> <strong>Polimorfismo:</strong> Capacidade de objetos diferentes responderem à mesma mensagem de forma específica.</li>
+                            <li><i class="fas fa-eye-slash text-success me-1"></i> <strong>Abstração:</strong> Esconder complexidade e focar no que o objeto <em>faz</em>, não em <em>como</em> faz.</li>
+                        </ul>
+                        
+                        <hr>
+                        <h6 class="fw-bold small">Diferença Crucial</h6>
+                        <div class="bg-light p-2 rounded small">
+                            <p class="mb-1"><strong>Sobrecarga (Overload):</strong> Mesma classe, mesmo nome, <u>parâmetros diferentes</u>.</p>
+                            <p class="mb-0"><strong>Sobrescrita (Override):</strong> Herança, mesma assinatura, <u>muda o comportamento</u>.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 3. METODOLOGIAS ÁGEIS (ATUALIZADO) -->
+            <div class="col-md-6 col-lg-4">
+                <div class="summary-card border-left-warning">
+                    <div class="card-header-summary text-warning">
+                        <span><i class="fas fa-users-cog me-2"></i>Ágil (Scrum & Kanban)</span>
+                    </div>
+                    <div class="card-body p-3">
+                        <h6 class="fw-bold">Manifesto Ágil (4 Valores)</h6>
+                        <ul class="list-unstyled small list-definition mb-3">
+                            <li><i class="fas fa-users text-warning me-1"></i> <strong>Indivíduos e interações</strong> > Processos e ferramentas.</li>
+                            <li><i class="fas fa-laptop-code text-warning me-1"></i> <strong>Software funcionando</strong> > Documentação abrangente.</li>
+                            <li><i class="fas fa-handshake text-warning me-1"></i> <strong>Colaboração com o cliente</strong> > Negociação de contratos.</li>
+                            <li><i class="fas fa-sync-alt text-warning me-1"></i> <strong>Responder a mudanças</strong> > Seguir um plano.</li>
+                        </ul>
+                        <hr>
+                        <h6 class="fw-bold">Scrum: Papéis (Accountabilities)</h6>
+                        <ul class="list-unstyled small list-definition mb-3">
+                            <li><i class="fas fa-crown text-warning me-1"></i> <strong>Product Owner (PO):</strong> Dono do "O Que". Maximiza o <u>Valor</u>. Gerencia o Backlog. Voz do cliente.</li>
+                            <li><i class="fas fa-shield-alt text-warning me-1"></i> <strong>Scrum Master (SM):</strong> Dono do "Processo". Líder Servidor. Remove impedimentos. <em>Não é chefe.</em></li>
+                            <li><i class="fas fa-code text-warning me-1"></i> <strong>Developers:</strong> Donos do "Como". Auto-organizados e Multifuncionais.</li>
+                            <li><i class="fas fa-ban text-danger me-1"></i> <strong>Gerente de Projetos:</strong> <u>Não existe</u> no Scrum.</li>
+                        </ul>
+                        
+                        <h6 class="fw-bold">A Sprint (O Coração)</h6>
+                        <ul class="list-unstyled small list-definition mb-3">
+                            <li><strong>Time-box:</strong> Duração fixa (máx 1 mês). Normalmente 2-4 semanas.</li>
+                            <li><strong>Meta:</strong> Não se fazem mudanças que ponham em perigo a Meta da Sprint.</li>
+                        </ul>
+
+                        <h6 class="fw-bold">Eventos (Todos Time-boxed)</h6>
+                        <div class="progress mb-1" style="height: 20px;">
+                          <div class="progress-bar bg-warning text-dark" role="progressbar" style="width: 25%">Plan</div>
+                          <div class="progress-bar bg-info text-white" role="progressbar" style="width: 25%">Daily</div>
+                          <div class="progress-bar bg-primary" role="progressbar" style="width: 25%">Review</div>
+                          <div class="progress-bar bg-success" role="progressbar" style="width: 25%">Retro</div>
+                        </div>
+                        <div class="d-flex justify-content-between small text-muted fst-italic mb-3">
+                            <span>8h</span><span>15m</span><span>4h</span><span>3h</span>
+                        </div>
+                        
+                        <hr>
+                        <h6 class="fw-bold">Kanban</h6>
+                        <p class="small mb-0">Sistema Puxado (Pull). Foco no <strong>Fluxo Contínuo</strong> e limitar <strong>WIP</strong> (Trabalho em progresso) para evitar gargalos.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 4. WEB & BOOTSTRAP (SIMPLIFICADO) -->
+            <div class="col-md-6 col-lg-4">
+                <div class="summary-card border-left-info">
+                    <div class="card-header-summary text-info">
+                        <span><i class="fab fa-html5 me-2"></i>Web & Bootstrap</span>
+                    </div>
+                    <div class="card-body p-3">
+                        <h6 class="fw-bold">HTML5 (O Esqueleto)</h6>
+                        <ul class="list-unstyled small list-definition mb-2">
+                            <li><i class="fas fa-layer-group text-info me-1"></i> <strong>Estrutura:</strong> <code>&lt;header&gt;</code> (Topo), <code>&lt;footer&gt;</code> (Rodapé), <code>&lt;nav&gt;</code> (Menu).</li>
+                            <li><i class="fas fa-bullseye text-info me-1"></i> <strong>Principal:</strong> <code>&lt;main&gt;</code> (O conteúdo central da página).</li>
+                            <li><i class="fas fa-columns text-info me-1"></i> <strong>Lateral:</strong> <code>&lt;aside&gt;</code> (Propagandas, Sidebar).</li>
+                            <li class="mt-2 bg-light p-1 rounded"><strong>Diferença Chave:</strong><br><code>&lt;article&gt;</code> = Faz sentido sozinho (Post/Notícia).<br><code>&lt;section&gt;</code> = Apenas um bloco de um assunto.</li>
+                        </ul>
+                        <hr>
+                        <h6 class="fw-bold">Bootstrap 5 (O Estilo)</h6>
+                        <ul class="list-unstyled small list-definition">
+                            <li><span class="badge bg-info text-dark">Grid</span> O mundo tem <strong>12 colunas</strong>. Você decide quantas seu elemento ocupa (Ex: <code>col-6</code> = metade).</li>
+                            <li><span class="badge bg-info text-dark">Espaços</span> <strong>m</strong> (Margem/Fora) e <strong>p</strong> (Padding/Dentro). <br>Ex: <code>m-3</code> (Margem média).</li>
+                            <li><span class="badge bg-info text-dark">Flex</span> Use <code>d-flex</code> para alinhar itens lado a lado ou centralizar.</li>
+                            <li><span class="badge bg-info text-dark">Cores</span> <code>primary</code> (Azul), <code>success</code> (Verde), <code>danger</code> (Vermelho).</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 5. PADRÕES DE PROJETO -->
+            <div class="col-md-6 col-lg-4">
+                <div class="summary-card border-left-danger">
+                    <div class="card-header-summary text-danger">
+                        <span><i class="fas fa-chess me-2"></i>Padrões de Projeto</span>
+                    </div>
+                    <div class="card-body p-0">
+                        <!-- Accordion com IDs verificados e estrutura limpa -->
+                        <div class="accordion accordion-flush" id="accordionPatterns">
+                            
+                            <!-- Item 1 -->
+                            <div class="accordion-item">
+                                <h2 class="accordion-header" id="headingOne">
+                                    <button class="accordion-button collapsed fw-bold" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="false" aria-controls="collapseOne">
+                                        Criacionais (Nascer/Criação)
+                                    </button>
+                                </h2>
+                                <div id="collapseOne" class="accordion-collapse collapse" aria-labelledby="headingOne" data-bs-parent="#accordionPatterns">
+                                    <div class="accordion-body small bg-light">
+                                        <ul class="mb-0 ps-3">
+                                            <li><strong>Singleton:</strong> Garante uma única instância (Ex: Conexão BD).</li>
+                                            <li><strong>Factory Method:</strong> Subclasse decide qual objeto instanciar.</li>
+                                            <li><strong>Builder:</strong> Cria objetos complexos passo a passo.</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Item 2 -->
+                            <div class="accordion-item">
+                                <h2 class="accordion-header" id="headingTwo">
+                                    <button class="accordion-button collapsed fw-bold" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+                                        Estruturais (Montar/Estrutura)
+                                    </button>
+                                </h2>
+                                <div id="collapseTwo" class="accordion-collapse collapse" aria-labelledby="headingTwo" data-bs-parent="#accordionPatterns">
+                                    <div class="accordion-body small bg-light">
+                                        <ul class="mb-0 ps-3">
+                                            <li><strong>Adapter:</strong> Converte interfaces incompatíveis (Tomada 3 pinos).</li>
+                                            <li><strong>Facade:</strong> Interface simplificada para sistema complexo (Painel do carro).</li>
+                                            <li><strong>Decorator:</strong> Adiciona funcionalidades dinamicamente.</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Item 3 -->
+                            <div class="accordion-item">
+                                <h2 class="accordion-header" id="headingThree">
+                                    <button class="accordion-button collapsed fw-bold" type="button" data-bs-toggle="collapse" data-bs-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
+                                        Comportamentais (Falar/Ação)
+                                    </button>
+                                </h2>
+                                <div id="collapseThree" class="accordion-collapse collapse" aria-labelledby="headingThree" data-bs-parent="#accordionPatterns">
+                                    <div class="accordion-body small bg-light">
+                                        <ul class="mb-0 ps-3">
+                                            <li><strong>Observer:</strong> Notificação 1-para-muitos (Sininho Youtube).</li>
+                                            <li><strong>Strategy:</strong> Troca de algoritmos em tempo de execução (Rotas GPS).</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 6. CLOUD & TESTES -->
+            <div class="col-md-6 col-lg-4">
+                <div class="summary-card border-left-secondary">
+                    <div class="card-header-summary text-secondary">
+                        <span><i class="fas fa-cloud me-2"></i>Cloud & Testes</span>
+                    </div>
+                    <div class="card-body p-3">
+                        <h6 class="fw-bold">Nuvem (Quem gerencia o que?)</h6>
+                        <ul class="list-unstyled small list-definition">
+                            <li><strong class="text-secondary">IaaS (Infra):</strong> Você aluga a máquina virtual. Você cuida do Sistema Operacional. <br><em>Ex: AWS EC2.</em></li>
+                            <li><strong class="text-secondary">PaaS (Plataforma):</strong> Eles dão o ambiente, você só traz o código. <br><em>Ex: Heroku, Google App Engine.</em></li>
+                            <li><strong class="text-secondary">SaaS (Software):</strong> Você só usa o produto final. <br><em>Ex: Gmail, Google Docs, Netflix.</em></li>
+                        </ul>
+                        <hr>
+                        <h6 class="fw-bold">Testes</h6>
+                        <ul class="list-unstyled small list-definition">
+                            <li><strong>Unitário:</strong> Isola e testa a menor parte (função). Rápido.</li>
+                            <li><strong>Mock:</strong> Objeto falso para simular dependências (Ex: Banco de dados falso) para não quebrar o teste unitário.</li>
+                            <li><strong>TDD:</strong> Ciclo: Falha (Red) &rarr; Passa (Green) &rarr; Refatora.</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="row">
+            <div class="col-12 text-center">
+                <button onclick="startQuiz()" class="btn btn-primary btn-start-quiz">
+                    <i class="fas fa-play me-2"></i>INICIAR SIMULADO AGORA
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- TELA 2: SIMULADO (QUIZ) -->
+    <div id="quiz-view" class="container quiz-container">
+        <div class="text-center mb-5">
+            <button onclick="backToSummary()" class="btn btn-sm btn-outline-secondary mb-3"><i class="fas fa-arrow-left me-1"></i> Voltar ao Resumo</button>
+            <h1 class="fw-bold text-primary"><i class="fas fa-tasks me-2"></i>Simulado Final</h1>
+            <p class="lead text-secondary">25 Questões: Arquitetura, POO, Ágil, Web, Padrões, Cloud e Testes.</p>
+        </div>
+
+        <div id="quiz-area">
+            <!-- As questões serão injetadas aqui via JavaScript -->
+        </div>
+
+        <div class="text-center mt-5 mb-5">
+            <button onclick="finishQuiz()" class="btn btn-success btn-lg px-5 py-3 rounded-pill fw-bold shadow">
+                <i class="fas fa-flag-checkered me-2"></i>FINALIZAR SIMULADO E VER ESTATÍSTICAS
+            </button>
+        </div>
+    </div>
+
+    <!-- TELA 3: RESULTADOS (ESTATÍSTICAS) -->
+    <div id="result-view" class="container result-container py-5">
+        <div class="text-center mb-5">
+            <h1 class="header-title display-5 text-primary">Relatório de Desempenho</h1>
+            <p class="lead text-secondary">Confira como você se saiu nos temas da prova.</p>
+        </div>
+
+        <div class="row g-4 mb-5">
+            <div class="col-md-6">
+                <div class="stat-card border-left-primary">
+                    <h5 class="text-uppercase text-secondary mb-3">Nota Geral</h5>
+                    <div class="score-big" id="final-score">0/25</div>
+                    <div class="progress mt-3" style="height: 25px;">
+                        <div id="final-progress" class="progress-bar bg-primary" role="progressbar" style="width: 0%"></div>
+                    </div>
+                    <p class="mt-2 text-muted fw-bold" id="final-percentage">0%</p>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="stat-card border-left-success">
+                    <h5 class="text-uppercase text-secondary mb-3">Resumo</h5>
+                    <div class="row mt-4">
+                        <div class="col-6">
+                            <h3 class="text-success fw-bold" id="total-correct">0</h3>
+                            <p class="small">Acertos</p>
+                        </div>
+                        <div class="col-6">
+                            <h3 class="text-danger fw-bold" id="total-incorrect">0</h3>
+                            <p class="small">Erros</p>
+                        </div>
+                    </div>
+                    <hr>
+                    <div class="text-start">
+                        <p class="mb-1 fw-bold text-danger"><i class="fas fa-exclamation-triangle me-2"></i>Ponto de Atenção:</p>
+                        <p id="weakest-topic" class="text-muted">Nenhum erro registrado.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <h4 class="fw-bold mb-4"><i class="fas fa-chart-bar me-2"></i>Desempenho por Tema</h4>
+        <div class="table-responsive bg-white rounded shadow-sm p-3 mb-5">
+            <table class="table table-hover align-middle">
+                <thead class="table-light">
+                    <tr>
+                        <th>Tema</th>
+                        <th class="text-center">Questões</th>
+                        <th class="text-center">Acertos</th>
+                        <th class="text-center">Erros</th>
+                        <th class="text-center">Aproveitamento</th>
+                    </tr>
+                </thead>
+                <tbody id="topic-table-body">
+                    <!-- Inserido via JS -->
+                </tbody>
+            </table>
+        </div>
+
+        <div class="text-center">
+            <button onclick="restartQuiz()" class="btn btn-outline-primary btn-lg"><i class="fas fa-redo me-2"></i>Refazer Simulado</button>
+            <button onclick="backToSummary()" class="btn btn-secondary btn-lg ms-2"><i class="fas fa-home me-2"></i>Voltar ao Início</button>
+        </div>
+    </div>
+
+    <!-- Placar Flutuante -->
+    <div id="sticky-score" class="sticky-score">
+        <i class="fas fa-check-circle me-1"></i> Acertos: <span id="score">0</span> / 25
+    </div>
+
+    <script>
+        // --- Estrutura de Dados para Estatísticas ---
+        const topicStats = {}; // { "TopicName": { total: 0, correct: 0, incorrect: 0 } }
+
+        // --- Lógica de Navegação ---
+        function startQuiz() {
+            document.getElementById('summary-view').style.display = 'none';
+            document.getElementById('result-view').style.display = 'none';
+            document.getElementById('quiz-view').style.display = 'block';
+            document.getElementById('sticky-score').style.display = 'block';
+            window.scrollTo(0,0);
+        }
+
+        function backToSummary() {
+            document.getElementById('summary-view').style.display = 'block';
+            document.getElementById('quiz-view').style.display = 'none';
+            document.getElementById('result-view').style.display = 'none';
+            document.getElementById('sticky-score').style.display = 'none';
+            window.scrollTo(0,0);
+        }
+
+        function finishQuiz() {
+            calculateAndShowResults();
+            document.getElementById('quiz-view').style.display = 'none';
+            document.getElementById('sticky-score').style.display = 'none';
+            document.getElementById('result-view').style.display = 'block';
+            window.scrollTo(0,0);
+        }
+
+        function restartQuiz() {
+            location.reload(); // Recarrega a página para zerar tudo limpo
+        }
+
+        // --- Dados do Quiz ---
+        const questions = [
+            // --- ARQUITETURA & SOLID (5 Questões) ---
+            {
+                id: 1,
+                topic: "SOLID",
+                text: "No princípio SOLID, o que significa a sigla 'O' (Open/Closed Principle)?",
+                options: [
+                    "Uma classe deve estar aberta para modificação, mas fechada para extensão.",
+                    "Uma classe deve estar aberta para extensão, mas fechada para modificação.",
+                    "O código deve ser Open Source.",
+                    "Objetos devem ser instanciados com construtores abertos."
+                ],
+                correct: 1,
+                rationale: "<strong>Correto!</strong> OCP diz que devemos ser capazes de adicionar novos comportamentos (extensão) sem alterar o código fonte existente (modificação), evitando bugs em funcionalidades já estáveis."
+            },
+            {
+                id: 2,
+                topic: "SOLID",
+                text: "Qual princípio é violado se uma classe `Relatorio` for responsável por calcular os dados E TAMBÉM por imprimir o relatório em PDF?",
+                options: [
+                    "SRP - Princípio da Responsabilidade Única.",
+                    "LSP - Princípio de Substituição de Liskov.",
+                    "ISP - Princípio de Segregação de Interface.",
+                    "DIP - Princípio de Inversão de Dependência."
+                ],
+                correct: 0,
+                rationale: "<strong>Correto!</strong> O SRP diz que uma classe deve ter apenas um motivo para mudar. Aqui ela tem dois: mudanças na lógica de cálculo e mudanças no formato de impressão."
+            },
+            {
+                id: 3,
+                topic: "Arquitetura",
+                text: "Qual é o objetivo principal do padrão arquitetural MVC (Model-View-Controller)?",
+                options: [
+                    "Aumentar o acoplamento entre banco de dados e interface.",
+                    "Separar as preocupações: Dados (Model), Interface (View) e Fluxo/Lógica (Controller).",
+                    "Criar apenas uma camada para toda a aplicação.",
+                    "Garantir que o sistema rode na nuvem."
+                ],
+                correct: 1,
+                rationale: "<strong>Correto!</strong> O MVC desacopla a apresentação da lógica de negócio, facilitando manutenção e testes."
+            },
+            {
+                id: 4,
+                topic: "SOLID",
+                text: "O Princípio de Inversão de Dependência (DIP) sugere que:",
+                options: [
+                    "Módulos de alto nível devem depender de detalhes de implementação.",
+                    "Devemos depender de abstrações (interfaces/classes abstratas) e não de classes concretas.",
+                    "Nunca devemos usar herança.",
+                    "O banco de dados deve depender da interface do usuário."
+                ],
+                correct: 1,
+                rationale: "<strong>Correto!</strong> Depender de abstrações torna o sistema flexível, permitindo trocar implementações (ex: trocar banco SQL por arquivo) sem quebrar o código de alto nível."
+            },
+            {
+                id: 5,
+                topic: "Conceitos",
+                text: "O que buscamos em um código de alta qualidade em relação a Acoplamento e Coesão?",
+                options: [
+                    "Alto Acoplamento e Alta Coesão.",
+                    "Baixo Acoplamento e Baixa Coesão.",
+                    "Alto Acoplamento e Baixa Coesão.",
+                    "Baixo Acoplamento e Alta Coesão."
+                ],
+                correct: 3,
+                rationale: "<strong>Correto!</strong> Queremos classes focadas (Alta Coesão) e independentes umas das outras (Baixo Acoplamento)."
+            },
+
+            // --- POO (5 Questões) ---
+            {
+                id: 6,
+                topic: "POO",
+                text: "Qual pilar da POO permite que um objeto 'Esconder' seus dados internos e controlar o acesso a eles?",
+                options: [
+                    "Polimorfismo",
+                    "Herança",
+                    "Encapsulamento",
+                    "Abstração"
+                ],
+                correct: 2,
+                rationale: "<strong>Correto!</strong> Encapsulamento usa modificadores (private, protected) para proteger o estado do objeto."
+            },
+            {
+                id: 7,
+                topic: "POO",
+                text: "Qual a diferença entre uma Interface e uma Classe Abstrata (em Java)?",
+                options: [
+                    "Uma classe pode herdar de várias classes abstratas, mas apenas de uma interface.",
+                    "Uma classe pode implementar várias interfaces, mas herdar apenas de uma classe abstrata.",
+                    "Interfaces podem ter construtores, classes abstratas não.",
+                    "Não há diferença."
+                ],
+                correct: 1,
+                rationale: "<strong>Correto!</strong> A herança múltipla de classes (mesmo abstratas) não é permitida nessas linguagens, mas a implementação múltipla de interfaces é."
+            },
+            {
+                id: 8,
+                topic: "POO",
+                text: "Sobre Herança vs Composição, qual é a boa prática recomendada?",
+                options: [
+                    "Sempre use Herança para reutilizar código.",
+                    "Prefira Composição (Tem-um) ao invés de Herança (É-um) para maior flexibilidade.",
+                    "Nunca use objetos dentro de outros objetos.",
+                    "Herança é a única forma de polimorfismo."
+                ],
+                correct: 1,
+                rationale: "<strong>Correto!</strong> Composição é mais flexível, permite mudar comportamento em tempo de execução e evita problemas de herança profunda."
+            },
+            {
+                id: 9,
+                topic: "POO",
+                text: "O que caracteriza o Polimorfismo?",
+                options: [
+                    "A capacidade de um método ter várias formas de implementação (sobrescrita) ou assinaturas (sobrecarga).",
+                    "A capacidade de uma classe ter apenas um método.",
+                    "A capacidade de transformar código Java em Python.",
+                    "A criação de várias instâncias da mesma classe."
+                ],
+                correct: 0,
+                rationale: "<strong>Correto!</strong> Polimorfismo permite que objetos de tipos diferentes respondam à mesma mensagem de formas específicas."
+            },
+            {
+                id: 10,
+                topic: "POO",
+                text: "O que é um Construtor?",
+                options: [
+                    "Um método que destrói o objeto.",
+                    "Uma classe que fabrica outras classes.",
+                    "Um método especial executado na criação do objeto para inicializar seus atributos.",
+                    "Um padrão de projeto para construção de interfaces."
+                ],
+                correct: 2,
+                rationale: "<strong>Correto!</strong> O construtor prepara o objeto para uso logo após o 'new'."
+            },
+
+            // --- ÁGIL (5 Questões) ---
+            {
+                id: 11,
+                topic: "Scrum",
+                text: "Quem é o responsável por priorizar o Backlog do Produto e maximizar o valor da entrega?",
+                options: [
+                    "Scrum Master",
+                    "Product Owner (PO)",
+                    "Time de Desenvolvimento",
+                    "Gerente de Projetos"
+                ],
+                correct: 1,
+                rationale: "<strong>Correto!</strong> O PO é a voz do cliente e decide O QUE deve ser feito e em qual ordem."
+            },
+            {
+                id: 12,
+                topic: "Scrum",
+                text: "Qual cerimônia do Scrum tem como foco a melhoria contínua do PROCESSO e do time?",
+                options: [
+                    "Sprint Planning",
+                    "Daily Scrum",
+                    "Sprint Review",
+                    "Sprint Retrospective"
+                ],
+                correct: 3,
+                rationale: "<strong>Correto!</strong> A Retrospectiva acontece ao final da Sprint para o time discutir 'como trabalhamos' e 'como podemos melhorar'."
+            },
+            {
+                id: 13,
+                topic: "Kanban",
+                text: "Qual é uma prática fundamental do Kanban para evitar gargalos?",
+                options: [
+                    "Fazer Daily de 1 hora.",
+                    "Limitar o WIP (Work In Progress).",
+                    "Usar Sprints de 4 semanas.",
+                    "Ter um Scrum Master obrigatório."
+                ],
+                correct: 1,
+                rationale: "<strong>Correto!</strong> Limitar o trabalho em progresso força a conclusão de tarefas antes de iniciar novas, melhorando o fluxo."
+            },
+            {
+                id: 14,
+                topic: "Ágil",
+                text: "O que é uma User Story (História de Usuário)?",
+                options: [
+                    "Um relatório de bug.",
+                    "Uma descrição técnica do banco de dados.",
+                    "Uma descrição curta de uma funcionalidade do ponto de vista do usuário final.",
+                    "A biografia do usuário."
+                ],
+                correct: 2,
+                rationale: "<strong>Correto!</strong> Segue o modelo: 'Como [papel], eu quero [ação], para [benefício]'."
+            },
+            {
+                id: 15,
+                topic: "Scrum",
+                text: "Qual o objetivo da Daily Scrum?",
+                options: [
+                    "Resolver problemas técnicos complexos.",
+                    "Sincronizar o trabalho do time e planejar as próximas 24h.",
+                    "Apresentar o produto ao cliente.",
+                    "Reclamar da gerência."
+                ],
+                correct: 1,
+                rationale: "<strong>Correto!</strong> É uma reunião rápida (15 min) de alinhamento, não de resolução de problemas profundos."
+            },
+
+            // --- WEB & BOOTSTRAP (5 Questões) ---
+            {
+                id: 16,
+                topic: "Bootstrap",
+                text: "Qual classe do Bootstrap cria uma grade onde a coluna ocupa metade da tela em dispositivos médios (tablets/desktops pequenos)?",
+                options: [
+                    "col-6-md",
+                    "col-half",
+                    "col-md-6",
+                    "grid-50"
+                ],
+                correct: 2,
+                rationale: "<strong>Correto!</strong> O padrão é `col-{breakpoint}-{tamanho}`. O total é 12, então 6 é metade."
+            },
+            {
+                id: 17,
+                topic: "HTML",
+                text: "Qual tag HTML é semanticamente correta para agrupar links de navegação?",
+                options: [
+                    "div",
+                    "navigation",
+                    "nav",
+                    "section"
+                ],
+                correct: 2,
+                rationale: "<strong>Correto!</strong> A tag `<nav>` indica para motores de busca e leitores de tela que ali existe um menu de navegação."
+            },
+            {
+                id: 18,
+                topic: "Bootstrap",
+                text: "Para tornar um elemento flexbox e centralizar seu conteúdo, quais classes usamos?",
+                options: [
+                    "d-block text-center",
+                    "d-flex justify-content-center align-items-center",
+                    "flex-center",
+                    "d-grid place-center"
+                ],
+                correct: 1,
+                rationale: "<strong>Correto!</strong> `d-flex` ativa o flexbox, `justify-content` alinha horizontalmente e `align-items` alinha verticalmente."
+            },
+            {
+                id: 19,
+                topic: "HTML",
+                text: "Qual tag cria uma lista suspensa (dropdown) em um formulário?",
+                options: [
+                    "input type='list'",
+                    "select",
+                    "dropdown",
+                    "option-list"
+                ],
+                correct: 1,
+                rationale: "<strong>Correto!</strong> A tag `<select>` contém várias tags `<option>` dentro."
+            },
+            {
+                id: 20,
+                topic: "Bootstrap",
+                text: "Qual a função das classes de espaçamento como `m-3` e `p-2`?",
+                options: [
+                    "Mudar a cor do texto.",
+                    "Definir Margin (m) e Padding (p).",
+                    "Mudar o tamanho da fonte.",
+                    "Criar bordas."
+                ],
+                correct: 1,
+                rationale: "<strong>Correto!</strong> São utilitários de espaçamento. O número indica o tamanho na escala do Bootstrap."
+            },
+
+            // --- PADRÕES, CLOUD & TESTES (5 Questões) ---
+            {
+                id: 21,
+                topic: "Padrões",
+                text: "Qual padrão de projeto garante que uma classe tenha apenas UMA instância em toda a aplicação?",
+                options: [
+                    "Singleton",
+                    "Factory",
+                    "Observer",
+                    "Prototype"
+                ],
+                correct: 0,
+                rationale: "<strong>Correto!</strong> Singleton restringe a instanciação a um único objeto."
+            },
+            {
+                id: 22,
+                topic: "Padrões",
+                text: "Qual padrão permite que objetos incompatíveis trabalhem juntos (como um adaptador de tomada)?",
+                options: [
+                    "Strategy",
+                    "Adapter",
+                    "Decorator",
+                    "Facade"
+                ],
+                correct: 1,
+                rationale: "<strong>Correto!</strong> O Adapter converte a interface de uma classe em outra interface esperada pelo cliente."
+            },
+            {
+                id: 23,
+                topic: "Padrões",
+                text: "Qual padrão é usado para notificar vários objetos quando o estado de um objeto muda (ex: botão 'Inscrever-se' no YouTube)?",
+                options: [
+                    "Observer",
+                    "Command",
+                    "State",
+                    "Chain of Responsibility"
+                ],
+                correct: 0,
+                rationale: "<strong>Correto!</strong> O Observer define uma dependência um-para-muitos."
+            },
+            {
+                id: 24,
+                topic: "Cloud",
+                text: "No modelo SaaS (Software as a Service), o que o usuário gerencia?",
+                options: [
+                    "O Sistema Operacional.",
+                    "A rede e o armazenamento.",
+                    "Nada da infraestrutura, apenas usa a aplicação (configurações de usuário).",
+                    "O código fonte."
+                ],
+                correct: 2,
+                rationale: "<strong>Correto!</strong> Em SaaS (como Gmail), o provedor cuida de tudo. O usuário só consome o serviço."
+            },
+            {
+                id: 25,
+                topic: "Testes",
+                text: "O que caracteriza um Teste Unitário?",
+                options: [
+                    "Testar o sistema inteiro de ponta a ponta.",
+                    "Testar a interface gráfica.",
+                    "Testar a menor unidade de código (função/método) de forma isolada.",
+                    "Testar a integração com o banco de dados."
+                ],
+                correct: 2,
+                rationale: "<strong>Correto!</strong> O foco é isolar a lógica e testá-la rapidamente, muitas vezes usando Mocks para dependências."
+            }
+        ];
+
+        let score = 0;
+
+        function renderQuiz() {
+            const quizArea = document.getElementById('quiz-area');
+            let htmlContent = '';
+
+            // Inicializar Estatísticas por Tópico
+            questions.forEach(q => {
+                if(!topicStats[q.topic]) {
+                    topicStats[q.topic] = { total: 0, correct: 0, incorrect: 0 };
+                }
+                topicStats[q.topic].total++;
+            });
+
+            questions.forEach((q, index) => {
+                let optionsHtml = '';
+                q.options.forEach((opt, optIndex) => {
+                    optionsHtml += `
+                        <label class="option-label" for="q${q.id}_opt${optIndex}">
+                            <input class="form-check-input me-2" type="radio" name="q${q.id}" id="q${q.id}_opt${optIndex}" value="${optIndex}">
+                            <span class="option-text">${opt}</span>
+                        </label>
+                    `;
+                });
+
+                htmlContent += `
+                    <div class="question-card" id="card-${q.id}">
+                        <div class="question-header">
+                            <span>Questão ${index + 1}</span>
+                            <span class="topic-badge">${q.topic}</span>
+                        </div>
+                        <div class="p-4">
+                            <h5 class="mb-4">${q.text}</h5>
+                            <div class="mb-3">
+                                ${optionsHtml}
+                            </div>
+                            <button onclick="checkAnswer(${q.id}, ${q.correct}, '${q.topic}')" class="btn-check-answer" id="btn-${q.id}">
+                                <i class="fas fa-check me-2"></i>Conferir Resposta
+                            </button>
+                            
+                            <div id="feedback-${q.id}" class="feedback-box">
+                                <h6 class="fw-bold" id="feedback-title-${q.id}"></h6>
+                                <p class="mb-0" id="feedback-text-${q.id}"></p>
+                                <hr>
+                                <p class="small text-muted mb-0"><i class="fas fa-lightbulb me-1"></i> ${q.rationale}</p>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            });
+
+            quizArea.innerHTML = htmlContent;
+        }
+
+        function checkAnswer(questionId, correctIndex, topic) {
+            const selectedOption = document.querySelector(`input[name="q${questionId}"]:checked`);
+            const feedbackBox = document.getElementById(`feedback-${questionId}`);
+            const feedbackTitle = document.getElementById(`feedback-title-${questionId}`);
+            const feedbackText = document.getElementById(`feedback-text-${questionId}`);
+            const btn = document.getElementById(`btn-${questionId}`);
+            const scoreDisplay = document.getElementById('score');
+
+            if (!selectedOption) {
+                alert("Por favor, selecione uma opção antes de conferir.");
+                return;
+            }
+
+            const userIndex = parseInt(selectedOption.value);
+            
+            // Desabilitar botão e inputs após responder
+            btn.disabled = true;
+            btn.classList.add('opacity-50');
+            const inputs = document.querySelectorAll(`input[name="q${questionId}"]`);
+            inputs.forEach(input => input.disabled = true);
+
+            feedbackBox.style.display = 'block';
+
+            if (userIndex === correctIndex) {
+                feedbackBox.className = 'feedback-box feedback-correct';
+                feedbackTitle.innerText = "Parabéns! Você acertou.";
+                feedbackText.innerText = "Ótima escolha.";
+                score++;
+                scoreDisplay.innerText = score;
+                topicStats[topic].correct++;
+                
+                scoreDisplay.parentElement.classList.add('bg-warning');
+                setTimeout(() => scoreDisplay.parentElement.classList.remove('bg-warning'), 500);
+            } else {
+                feedbackBox.className = 'feedback-box feedback-incorrect';
+                feedbackTitle.innerText = "Ops! Resposta incorreta.";
+                feedbackText.innerText = "A opção selecionada não é a ideal.";
+                topicStats[topic].incorrect++;
+            }
+        }
+
+        function calculateAndShowResults() {
+            const totalQuestions = questions.length;
+            const finalScore = score;
+            const finalPercentage = Math.round((score / totalQuestions) * 100);
+            const totalIncorrect = totalQuestions - score; // Assumindo todas respondidas (ou não respondidas = erradas no total geral)
+            
+            // Atualizar UI Geral
+            document.getElementById('final-score').innerText = `${finalScore}/${totalQuestions}`;
+            document.getElementById('final-progress').style.width = `${finalPercentage}%`;
+            document.getElementById('final-progress').className = `progress-bar ${finalPercentage >= 70 ? 'bg-success' : (finalPercentage >= 50 ? 'bg-warning' : 'bg-danger')}`;
+            document.getElementById('final-percentage').innerText = `${finalPercentage}% de Aproveitamento`;
+            
+            document.getElementById('total-correct').innerText = score;
+            // Para ser preciso, somamos os incorretos registrados. Se pular questão, não conta aqui como erro explícito no objeto, mas conta no total geral.
+            // Vamos somar os incorretos do objeto topicStats para ser coerente com os cliques.
+            let trackedIncorrect = 0;
+            for(let t in topicStats) trackedIncorrect += topicStats[t].incorrect;
+            
+            document.getElementById('total-incorrect').innerText = trackedIncorrect;
+
+            // Preencher Tabela de Tópicos e Achar o Pior
+            const tbody = document.getElementById('topic-table-body');
+            tbody.innerHTML = '';
+            
+            let maxErrors = -1;
+            let worstTopic = "Nenhum (Parabéns!)";
+
+            for (const [topic, stats] of Object.entries(topicStats)) {
+                // Evitar divisão por zero se não respondeu nada daquele tópico (stats.correct + stats.incorrect pode ser 0 se pulou)
+                const answeredInTopic = stats.correct + stats.incorrect;
+                const percent = answeredInTopic > 0 ? Math.round((stats.correct / answeredInTopic) * 100) : 0;
+                
+                // Lógica para Pior Tópico: Quem tem mais erros absolutos
+                if (stats.incorrect > maxErrors && stats.incorrect > 0) {
+                    maxErrors = stats.incorrect;
+                    worstTopic = topic;
+                }
+
+                tbody.innerHTML += `
+                    <tr>
+                        <td class="fw-bold text-primary">${topic}</td>
+                        <td class="text-center">${stats.total}</td>
+                        <td class="text-center text-success">${stats.correct}</td>
+                        <td class="text-center text-danger">${stats.incorrect}</td>
+                        <td class="text-center">
+                            <span class="badge ${percent >= 70 ? 'bg-success' : (percent >= 50 ? 'bg-warning' : 'bg-danger')}">
+                                ${percent}%
+                            </span>
+                        </td>
+                    </tr>
+                `;
+            }
+
+            if (maxErrors > 0) {
+                document.getElementById('weakest-topic').innerHTML = `Você teve mais dificuldade em <strong>${worstTopic}</strong> (${maxErrors} erros).`;
+            } else {
+                document.getElementById('weakest-topic').innerHTML = `<span class="text-success">Excelente! Você não errou nenhuma questão respondida.</span>`;
+            }
+        }
+
+        // Iniciar Renderização
+        renderQuiz();
+    </script>
+</body>
+</html>
