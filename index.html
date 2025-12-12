@@ -224,6 +224,13 @@
             text-align: center;
             height: 100%;
         }
+        .result-img {
+            max-width: 150px;
+            border-radius: 50%;
+            border: 5px solid #fff;
+            box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+            margin-bottom: 20px;
+        }
     </style>
 </head>
 <body class="p-3 p-md-5">
@@ -476,7 +483,7 @@
         <div class="text-center mb-5">
             <button onclick="backToSummary()" class="btn btn-sm btn-outline-secondary mb-3"><i class="fas fa-arrow-left me-1"></i> Voltar ao Resumo</button>
             <h1 class="fw-bold text-primary"><i class="fas fa-tasks me-2"></i>Simulado Final</h1>
-            <p class="lead text-secondary">25 Questões: Arquitetura, POO, Ágil, Web, Padrões, Cloud e Testes.</p>
+            <p class="lead text-secondary">30 Questões: Arquitetura, POO, Ágil, Web, Padrões, Cloud e Testes.</p>
         </div>
 
         <div id="quiz-area">
@@ -493,6 +500,7 @@
     <!-- TELA 3: RESULTADOS (ESTATÍSTICAS) -->
     <div id="result-view" class="container result-container py-5">
         <div class="text-center mb-5">
+            <img src="https://i.ibb.co/HLKdKB9t/jef.png" alt="Foto Resultado" class="result-img">
             <h1 class="header-title display-5 text-primary">Relatório de Desempenho</h1>
             <p class="lead text-secondary">Confira como você se saiu nos temas da prova.</p>
         </div>
@@ -501,7 +509,7 @@
             <div class="col-md-6">
                 <div class="stat-card border-left-primary">
                     <h5 class="text-uppercase text-secondary mb-3">Nota Geral</h5>
-                    <div class="score-big" id="final-score">0/25</div>
+                    <div class="score-big" id="final-score">0/30</div>
                     <div class="progress mt-3" style="height: 25px;">
                         <div id="final-progress" class="progress-bar bg-primary" role="progressbar" style="width: 0%"></div>
                     </div>
@@ -556,7 +564,7 @@
 
     <!-- Placar Flutuante -->
     <div id="sticky-score" class="sticky-score">
-        <i class="fas fa-check-circle me-1"></i> Acertos: <span id="score">0</span> / 25
+        <i class="fas fa-check-circle me-1"></i> Acertos: <span id="score">0</span> / 30
     </div>
 
     <script>
@@ -581,6 +589,30 @@
         }
 
         function finishQuiz() {
+            // VALIDAÇÃO: Verifica se todas as perguntas foram respondidas
+            let allAnswered = true;
+            let firstUnanswered = null;
+
+            questions.forEach(q => {
+                const selected = document.querySelector(`input[name="q${q.id}"]:checked`);
+                // Consideramos respondida se o radio estiver marcado ou se o botão estiver desabilitado (já respondeu e bloqueou)
+                // Como o botão desabilita os inputs, checar :checked é seguro.
+                // Mas minha lógica de checkAnswer desabilita o botão E os inputs.
+                // Então, se não houver um :checked, não respondeu.
+                if (!selected) {
+                    allAnswered = false;
+                    if(!firstUnanswered) firstUnanswered = q.id;
+                }
+            });
+
+            if (!allAnswered) {
+                alert(`Você ainda não respondeu todas as questões! Por favor, verifique a questão ${firstUnanswered} e outras.`);
+                // Opcional: Rolar até a questão não respondida
+                const card = document.getElementById(`card-${firstUnanswered}`);
+                if(card) card.scrollIntoView({behavior: 'smooth', block: 'center'});
+                return;
+            }
+
             calculateAndShowResults();
             document.getElementById('quiz-view').style.display = 'none';
             document.getElementById('sticky-score').style.display = 'none';
@@ -678,7 +710,7 @@
             {
                 id: 7,
                 topic: "POO",
-                text: "Qual a diferença entre uma Interface e uma Classe Abstrata (em Java)?",
+                text: "Qual a diferença entre uma Interface e uma Classe Abstrata (em Java/C#)?",
                 options: [
                     "Uma classe pode herdar de várias classes abstratas, mas apenas de uma interface.",
                     "Uma classe pode implementar várias interfaces, mas herdar apenas de uma classe abstrata.",
@@ -927,6 +959,73 @@
                 ],
                 correct: 2,
                 rationale: "<strong>Correto!</strong> O foco é isolar a lógica e testá-la rapidamente, muitas vezes usando Mocks para dependências."
+            },
+
+            // --- QUESTÕES EXTRAS (5 Questões) ---
+            {
+                id: 26,
+                topic: "Ágil",
+                text: "Qual frase representa corretamente um dos 4 valores do Manifesto Ágil?",
+                options: [
+                    "Processos e ferramentas mais que indivíduos e interações.",
+                    "Indivíduos e interações mais que processos e ferramentas.",
+                    "Negociação de contratos mais que colaboração com o cliente.",
+                    "Seguir um plano mais que responder a mudanças."
+                ],
+                correct: 1,
+                rationale: "<strong>Correto!</strong> O manifesto valoriza o elemento humano e a comunicação (Indivíduos e interações) acima de ferramentas rígidas."
+            },
+            {
+                id: 27,
+                topic: "Ágil",
+                text: "Complete o valor do Manifesto Ágil: 'Software em funcionamento mais que...'",
+                options: [
+                    "documentação abrangente.",
+                    "negociação de contratos.",
+                    "processos e ferramentas.",
+                    "planejamento detalhado."
+                ],
+                correct: 0,
+                rationale: "<strong>Correto!</strong> O foco é entregar valor real (software rodando) em vez de gastar tempo excessivo escrevendo manuais que ninguém lê."
+            },
+            {
+                id: 28,
+                topic: "Cloud",
+                text: "O que caracteriza a computação 'Serverless' (FaaS - Function as a Service)?",
+                options: [
+                    "Você aluga um servidor físico dedicado.",
+                    "O código roda em contêineres que ficam ligados 24h.",
+                    "Você gerencia o Sistema Operacional do servidor.",
+                    "O provedor gerencia a infraestrutura e você só paga pelo tempo de execução da função (milissegundos)."
+                ],
+                correct: 3,
+                rationale: "<strong>Correto!</strong> Serverless abstrai totalmente o servidor. Escala a zero quando não usado e cobra apenas por uso real."
+            },
+            {
+                id: 29,
+                topic: "Web",
+                text: "No CSS (base do Bootstrap), qual destes seletores tem a maior prioridade (especificidade)?",
+                options: [
+                    "Tag (ex: `div`)",
+                    "Classe (ex: `.btn`)",
+                    "ID (ex: `#header`)",
+                    "Seletor Universal (`*`)"
+                ],
+                correct: 2,
+                rationale: "<strong>Correto!</strong> A hierarquia básica de especificidade é: Inline Style > ID > Classe > Tag."
+            },
+            {
+                id: 30,
+                topic: "POO",
+                text: "O que significa a palavra-chave `static` em um atributo ou método de uma classe?",
+                options: [
+                    "Que o método não pode ser alterado.",
+                    "Que o membro pertence à Classe, e não a uma instância específica.",
+                    "Que a variável é constante.",
+                    "Que a classe é abstrata."
+                ],
+                correct: 1,
+                rationale: "<strong>Correto!</strong> Membros estáticos são compartilhados por todas as instâncias e podem ser acessados diretamente pelo nome da classe."
             }
         ];
 
